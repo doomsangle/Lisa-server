@@ -1,1 +1,0 @@
-hy2://a1b2c3d4-e5f6-7890-abcd-ef1234567890@1.2.3.4:36712?insecure=1&sni=www.bing.com#Hysteria2-Mock

@@ -1,1 +1,0 @@
-tuic://a1b2c3d4-e5f6-7890-abcd-ef1234567890:a1b2c3d4-e5f6-7890-abcd-ef1234567890@1.2.3.4:48923?congestion_control=bbr&alpn=h3&allow_insecure=1#Tuic5-Mock
