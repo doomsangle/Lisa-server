@@ -17,9 +17,46 @@
 
 ---
 
-## 🚀 部署步骤（3 步走）
+## 🎯 脚本对比：原版 sb.sh vs 本仓库 vpn.sh
 
-### 第 1 步：上传到服务器
+| 项目 | 原版 sing-box-yg（sb.sh） | 本仓库 vpn.sh（✅ 推荐） |
+|------|---------------------------|--------------------------|
+| **一行执行命令** | ```bash
+bash <(wget -qO- https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb.sh)
+``` | ✅ **海外服务器**（能直接访问 GitHub raw）：
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
+```
+🐌 **国内服务器**（GitHub raw 超时）走 gh-proxy 加速：
+```bash
+bash <(wget -qO- https://gh-proxy.com/https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
+``` |
+| **部署交互** | 需手动按菜单：`9` 安装 → `15` 生成分享 | **0 交互全自动**（内置 wget 预检查、sb.sh 补丁、Nginx 安装配置、防火墙放行…） |
+| **产出物** | 终端打印文字链接（无二维码 / 无 HTML 页面）| 日期文件夹 `YYYYMMDD-N/` + 二维码 `.png` + **完整响应式 HTML 页面**（Hero 6 平台 Tabs + 每张协议 5 色 Badge + 聚合节点⭐一键复制 + 扫码教程折叠面板 + FAQ/Ghelper 冲突说明 + 使用小贴士卡片）|
+| **访问方式** | 一条条复制终端文字，手机粘贴 | 浏览器打开 `http://<IP>/latest/` → 扫码 / 一键复制全部 |
+| **Nginx** | 无 | ✅ 自动安装（apt/yum/dnf 自适应）+ 覆盖默认站点 root → /etc/s-box/output + 302 `/` → `/latest/` 软链 |
+| **新机器依赖** | 需要先手动 `yum install -y wget` | ✅ 自动补 wget / qrencode；CRLF 换行符自动修复 |
+| **链接稳定性** | 同（都基于 sb.json 只生成一次）| 同 |
+| **主页 / 仓库** | [yonggekkk/sing-box-yg](https://github.com/yonggekkk/sing-box-yg) | **[doomsangle/Lisa-server](https://github.com/doomsangle/Lisa-server)**（你自己的仓库）|
+
+---
+
+## 🚀 部署步骤（3+1 种方式，任选其一）
+
+### ⭐ 方式 A（最快，无需本地文件）：服务器直接从你的 GitHub 拉取
+**不用本地下载 vpn.sh、不用 scp 传文件，SSH 进服务器粘贴 1 行就完事。**
+```bash
+# 1) 海外机器 / 能直接访问 GitHub raw
+bash <(wget -qO- https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
+
+# 2) 国内机器（GitHub raw 常超时）→ gh-proxy.com 加速镜像
+bash <(wget -qO- https://gh-proxy.com/https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
+```
+> 跑完看输出里的部署完成提示 → 浏览器打开 `http://<服务器IP>/latest/` 就能看到配置页面。
+
+### 方式 B（本地改了脚本 → 传服务器）：scp 上传 vpn.sh
+
+#### 第 1 步：上传到服务器
 
 ```bash
 scp -O vpn.sh root@<你的服务器IP>:~
