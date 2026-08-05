@@ -4239,7 +4239,7 @@ step0_install_base(){
         # CentOS 没有 jq / python3 时装 epel
         yum install -y epel-release >/dev/null 2>&1 || true
     fi
-    _inst wget; _inst curl; _inst jq; _inst python3; _inst gawk; _inst grep; _inst sed; _inst tr
+    _inst wget; _inst curl; _inst jq; _inst python3; _inst gawk; _inst grep; _inst sed; _inst tr; _inst qrencode
     # ip-check.sh RBL needs dig
     if ! command -v dig &>/dev/null; then
         if [ -x "$(command -v apt-get)" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y dnsutils >/dev/null 2>&1 || true;
@@ -4250,6 +4250,7 @@ step0_install_base(){
     command -v wget &>/dev/null && green "  -> wget OK"
     command -v curl &>/dev/null && green "  -> curl OK"
     command -v jq &>/dev/null   && green "  -> jq OK"
+    command -v qrencode &>/dev/null && green "  -> qrencode OK (二维码支持)"
 }
 
 # =====================================================
