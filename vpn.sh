@@ -5424,7 +5424,8 @@ IPCHECK_EOF
         echo ""
         blue "Pre-check done. If FAIL verdict, Ctrl+C now, rebuild instance for new IP, re-run."
         sleep 3
-    fi}
+    fi
+}
 
 # =====================================================
 # 纯 bash 补丁工具：在第 N 行之后插入多行内容
