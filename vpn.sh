@@ -5660,14 +5660,17 @@ main(){
     echo
     if [ "${1:-}" = "--precheck" ]; then PRECHECK_IP=1; export PRECHECK_IP; fi
 
-    step0_install_base
-    step1_deploy_output_helper
-    step2_prepare_env
-    step3_run_sbsh
-    step4_install_nginx
-    step5_write_nginx_conf
-    step6_open_ports
-    step7_show_result
+    set +e
+    set +u
+
+    step0_install_base || true
+    step1_deploy_output_helper || true
+    step2_prepare_env || true
+    step3_run_sbsh || true
+    step4_install_nginx || true
+    step5_write_nginx_conf || true
+    step6_open_ports || true
+    step7_show_result || true
 }
 
 main "$@"
