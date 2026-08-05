@@ -5457,10 +5457,25 @@ step3_run_sbsh(){
         yellow "  -> 检测到 sing-box 已安装，跳过安装"
     else
         green "  -> 安装 sing-box（全自动，3-8 分钟）..."
-        # 子 shell 执行：防止 instsllsingbox 内部的 exit 退出整个脚本
-        (instsllsingbox) </dev/null > /var/log/vpn_sb_install.log 2>&1 || true
+        # 在子 shell 中执行：覆盖 readp/exit，预设所有变量，完全非交互
+        (
+            # 1. 覆盖 readp：直接返回空（触发各函数的默认值分支）
+            readp(){
+                local varname="$2"
+                if [ -n "$varname" ]; then
+                    eval "$varname=''"
+                fi
+            }
+            # 2. 覆盖 exit：防止任何 exit 中断脚本
+            exit(){ return 0; }
+            # 3. 预设关键变量（避免未定义变量错误）
+            menu='' action='' port='' cpu='amd64'
+            # 4. 执行安装
+            instsllsingbox
+        ) > /var/log/vpn_sb_install.log 2>&1 || true
+
         local wait_n=0
-        while [ $wait_n -lt 180 ]; do
+        while [ $wait_n -lt 240 ]; do
             [ -f /etc/s-box/sb.json ] && break
             sleep 2; wait_n=$((wait_n+1))
         done
@@ -5468,7 +5483,11 @@ step3_run_sbsh(){
 
     if [ -f /etc/s-box/sb.json ]; then
         green "  -> 刷新分享链接 / 生成 HTML 页面..."
-        (sbshare) </dev/null > /var/log/vpn_sb_share.log 2>&1 || true
+        (
+            readp(){ local v="$2"; [ -n "$v" ] && eval "$v=''" ; }
+            exit(){ return 0; }
+            sbshare
+        ) > /var/log/vpn_sb_share.log 2>&1 || true
     fi
 
     if [ ! -f "$OUTPUT_BASE/latest/index.html" ]; then
