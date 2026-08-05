@@ -1,0 +1,42 @@
+# MetoE 后端 FastAPI - Systemd 服务配置
+# 放到 /etc/systemd/system/metoe-backend.service
+# 然后：
+#   systemctl daemon-reload
+#   systemctl enable metoe-backend
+#   systemctl start metoe-backend
+
+[Unit]
+Description=MetoE Backend (FastAPI + Uvicorn)
+After=network.target nginx.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+
+# 工作目录（后端项目根目录）
+WorkingDirectory=/var/www/metoe/backend
+
+# 虚拟环境 Python 路径（如果用虚拟环境）
+# ExecStart=/var/www/metoe/backend/venv/bin/uvicorn app:app --host 127.0.0.1 --port 8000 --workers 2
+# 如果不用虚拟环境：
+ExecStart=/usr/bin/python3 -m uvicorn app:app --host 127.0.0.1 --port 8000 --workers 2
+
+# 环境变量
+Environment="PYTHONUNBUFFERED=1"
+# Environment="DATABASE_URL=sqlite:///./data/metoe.db"
+
+# 重启策略
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+# 安全限制
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/www/metoe/backend
+
+[Install]
+WantedBy=multi-user.target

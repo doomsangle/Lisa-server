@@ -1,0 +1,13 @@
+
+  [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m426[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.3.83:[1m5173[22m/[39m
+[2m09:55:12[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/utils/request.js[22m
+[2m09:56:10[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/stores/user.js[22m
+[2m09:56:40[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/Dashboard.vue[22m
+[2m09:56:49[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/Dashboard.vue[22m
+[2m09:57:27[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/OrdersList.vue[22m
+[2m09:57:58[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/ServersList.vue[22m
+[2m09:58:38[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/proxies/BuyPage.vue[22m
+[2m09:58:52[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/proxies/BuyPage.vue[22m

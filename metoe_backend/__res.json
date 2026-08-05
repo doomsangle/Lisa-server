@@ -1,0 +1,103 @@
+{
+  "st": {
+    "uid": 3,
+    "oidA": 12,
+    "onoA": "PO17845378626854746",
+    "pnoP": "PAY1784537899338311",
+    "usdA": 20.55,
+    "oidB": 13,
+    "onoB": "PO17845378993101075",
+    "pnoU": "PAY1784538071510397",
+    "rate": 7.25,
+    "wallet": {
+      "network": "TRC20",
+      "currency": "USDT",
+      "address": "TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE",
+      "amount": "42.19310008",
+      "amount_raw": 42.19310008,
+      "memo": "PAY1784538071510397",
+      "min_confirmations": 1
+    },
+    "usdtA": 42.193103
+  },
+  "cbP": {
+    "verified": true,
+    "event": "CHECKOUT.ORDER.COMPLETED",
+    "settled": {
+      "paid": true,
+      "pay_no": "PAY1784537899338311",
+      "order_id": 12,
+      "order_no": "PO17845378626854746",
+      "channel": "paypal",
+      "channel_txn_id": "5O190127TN364715T",
+      "deploy_id": 7,
+      "task_no": "DEP17845380741112505",
+      "server_id": 7,
+      "proxy_ids": null
+    }
+  },
+  "cbU": {
+    "code": 200,
+    "message": "USDT 到账成功，已触发部署",
+    "data": {
+      "paid": true,
+      "pay_no": "PAY1784538071510397",
+      "order_id": 13,
+      "order_no": "PO17845378993101075",
+      "channel": "usdt",
+      "channel_txn_id": "0x007f558c437c4badaa7bfeb3b5f672c927b3fc464d",
+      "deploy_id": 8,
+      "task_no": "DEP17845380766616201",
+      "server_id": 8,
+      "proxy_ids": null
+    }
+  },
+  "bp": {
+    "id": "WH-TEST-839d5f57b50b4fe0adf7ea68a91b9ddb",
+    "event_type": "CHECKOUT.ORDER.COMPLETED",
+    "resource_type": "checkout-order",
+    "event_version": "1.0",
+    "resource": {
+      "id": "5O190127TN364715T",
+      "intent": "CAPTURE",
+      "status": "COMPLETED",
+      "custom_id": "PAY1784537899338311",
+      "purchase_units": [
+        {
+          "reference_id": "PO17845378626854746",
+          "custom_id": "PAY1784537899338311",
+          "amount": {
+            "currency_code": "USD",
+            "value": "20.55"
+          }
+        }
+      ],
+      "payer": {
+        "email_address": "b@x.com",
+        "payer_id": "DEMO"
+      }
+    }
+  },
+  "bu": {
+    "payNo": "PAY1784538071510397",
+    "txid": "0x007f558c437c4badaa7bfeb3b5f672c927b3fc464d",
+    "network": "TRC20",
+    "coin": "USDT",
+    "amount": 42.193103,
+    "confirmations": 18,
+    "minConfirm": 10,
+    "blockHeight": 68001234,
+    "blockTime": 1784538074,
+    "fromAddress": "TDEMO27220CF22F24418E9",
+    "toAddress": {
+      "network": "TRC20",
+      "currency": "USDT",
+      "address": "TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE",
+      "amount": "42.19310008",
+      "amount_raw": 42.19310008,
+      "memo": "PAY1784538071510397",
+      "min_confirmations": 1
+    },
+    "status": "success"
+  }
+}
