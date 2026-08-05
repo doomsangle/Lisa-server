@@ -103,12 +103,12 @@ generate_qr_codes() {
     done
 }
 
-_CLIENT_BADGES_ALL='<div class="client-badges"><span class="badge b-rocket" title="Shadowrocket (小火箭)">🚀 小火箭</span><span class="badge b-v2ray" title="v2rayNG / v2rayN">🟢 v2rayNG / v2rayN</span><span class="badge b-neko" title="NekoBox / NekoRay">📦 NekoBox / NekoRay</span><span class="badge b-clash" title="Clash Verge Rev">🐱 Clash Verge</span><span class="badge b-sfa" title="sing-box 官方 SFA / SFI / SFM">✨ SFA · SFI · SFM</span></div>'
+_CLIENT_BADGES_ALL='<div class="client-badges"><span class="badge b-rocket" title="Shadowrocket (通用接入客户端)">🚀 小火箭通用</span><span class="badge b-v2ray" title="NekoNG / Nekoray 通用客户端">🟢 NekoNG / Nekoray</span><span class="badge b-neko" title="NekoBox / NekoRay（通用内核）">📦 NekoBox / NekoRay</span><span class="badge b-clash" title="Clash Verge Rev（通用内核）">🐱 Clash Verge</span><span class="badge b-sfa" title="SFA / SFI / SFM 官方客户端">✨ SFA · SFI · SFM</span></div>'
 
 generate_html() {
     local html_file="$DATE_FOLDER/index.html"
     local hostname gen_time
-    hostname=$(hostname 2>/dev/null || echo "vpn-server")
+    hostname=$(hostname 2>/dev/null || echo "entry-server")
     gen_time=$(date "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
     [ -n "$gen_time" ] || gen_time=$(date 2>/dev/null || date -u 2>/dev/null || echo "Unknown")
 
@@ -118,7 +118,7 @@ generate_html() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VPN 节点配置 / 扫码导入 · ${gen_time}</title>
+    <title>出海节点接入中心 / 扫码即用 · ${gen_time}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -223,7 +223,7 @@ generate_html() {
     <div class="container">
         <!-- ===== Header ===== -->
         <div class="header">
-            <h1>🚀 VPN 节点配置中心 <small>扫码即连 · 复制即用</small></h1>
+            <h1>🌐 出海节点接入中心 <small>扫码即用 · 复制即连</small></h1>
             <p>
                 <span>📅 生成时间：${gen_time}</span>
                 <span>🖥️ 主机名：${hostname}</span>
@@ -233,7 +233,7 @@ generate_html() {
 
         <!-- ===== Hero：客户端工具 & 快速上手 ===== -->
         <div class="hero">
-            <h2>📱 用什么工具扫码 / 导入链接？</h2>
+            <h2>📱 用什么客户端工具扫码 / 导入链接？</h2>
             <div class="quick-tip">
                 👉 <b>最省事的操作（推荐）</b>：先滑到本页最下方的「<b>聚合节点</b>」卡片，点
                 <b style="color:#fff;">⭐ 一键复制全部</b> → 打开客户端选「从剪贴板批量导入」，
@@ -262,22 +262,22 @@ generate_html() {
                 <h4>其他可选：Stash / Quantumult X / sing-box 官方 SFI / Surge for iOS</h4>
             </div>
             <div id="plat-android" class="platform-panel">
-                <h4>⭐ 首选：v2rayNG（免费，全协议原生支持）</h4>
+                <h4>⭐ 首选：NekoNG（免费开源，全协议原生支持）</h4>
                 <ol>
-                    <li>GitHub 搜 v2rayNG 下载最新 release（.apk）或 F-Droid / Google Play 搜 <code>v2rayNG</code></li>
+                    <li>GitHub 搜 NekoNG / Nekoray 下载最新 release（.apk）或 F-Droid / Google Play 搜 <code>NekoNG</code></li>
                     <li>首页右上角 <b>➕</b> →「<b>扫描二维码</b>」（相机权限允许）或「<b>从剪贴板导入</b>」</li>
-                    <li>右下角 <b>V</b> 图标切换系统代理 → 选择节点即可</li>
+                    <li>右下角 <b>小猫</b> 图标切换系统接入 → 选择节点即可</li>
                 </ol>
-                <h4>📦 新选：NekoBox（sing-box 内核，UI 更现代）</h4>
+                <h4>📦 备选：NekoBox（sing-box 内核，UI 更现代）</h4>
                 <ol><li>首页右下角 ➕ →「Scan QR code」扫码 或 「Import from Clipboard」从剪贴板导入</li></ol>
                 <h4>✨ 官方：SFA（sing-box for Android / Google TV / 车机）</h4>
             </div>
             <div id="plat-win" class="platform-panel">
-                <h4>⭐ 首选：v2rayN（国内用户最多，免费开源）</h4>
+                <h4>⭐ 首选：NekoRay（桌面通用，免费开源）</h4>
                 <ol>
-                    <li>GitHub 搜 <code>2dust/v2rayN</code> 下载 zip，解压运行 <code>v2rayN.exe</code></li>
-                    <li>顶部菜单「服务器」→「<b>扫描屏幕二维码</b>」（自动取当前屏任意二维码）</li>
-                    <li>或点「<b>从剪贴板导入批量 URL</b>」→ 直接粘贴「聚合节点」复制的全部链接</li>
+                    <li>GitHub 搜 <code>NekoRay / NekoBox</code> 下载 zip，解压运行 <code>NekoRay.exe</code></li>
+                    <li>顶部菜单「 Profiles → 「<b>扫描屏幕二维码</b>」（自动取当前屏任意二维码）</li>
+                    <li>或点「<b>Import from Clipboard</b>」→ 直接粘贴「聚合节点」复制的全部链接</li>
                 </ol>
                 <h4>其他：NekoRay（跨平台 Qt 版，sing-box 内核）/ Clash Verge Rev（游戏 TUN 模式）/ SFM（sing-box 官方）</h4>
             </div>
@@ -512,7 +512,7 @@ EOF
             </div>
             <div class="jh-hint">
                 💡 <b>使用方法</b>：点上方按钮复制 → 打开对应客户端 →
-                小火箭选「配置 → 粘贴链接」、v2rayN/v2rayNG 按 <code>Ctrl+V</code> 或「从剪贴板导入批量 URL」、
+                小火箭选「配置 → 粘贴链接」、Nekoray/NekoNG 按 <code>Ctrl+V</code> 或「从剪贴板导入批量 URL」、
                 NekoBox/NekoRay 选「粘贴分享链接」、Clash 选转换工具转成订阅 → <b>一次导入 6 条</b>，
                 以后客户端可以根据实际网络情况自动切换最快的协议。
             </div>
@@ -592,30 +592,30 @@ EOF
 
         <div class="tutorial">
             <details>
-                <summary>📱 详细扫码导入教程：小火箭 / v2rayNG / NekoBox / Clash Verge</summary>
+                <summary>📱 详细扫码接入教程：小火箭通用 / NekoNG / NekoBox / Clash Verge</summary>
                 <div class="guide">
-                    <h5>🚀 iOS · Shadowrocket（小火箭）扫码三步走</h5>
+                    <h5>🚀 iOS · Shadowrocket（小火箭通用）扫码三步走</h5>
                     <ol>
                         <li>App Store 下载 <code>Shadowrocket</code>（美区/港区账号）</li>
                         <li>首页右上角 <b>➕ 加号</b> →「扫码」→ 对准上方任一协议二维码；字段自动填入后 <b>保存</b></li>
-                        <li>App 顶部大开关拨到<b>开启</b>，第一次会弹「添加 VPN 配置」允许即可</li>
+                        <li>App 顶部大开关拨到<b>开启</b>，第一次会弹「添加网络接入配置」允许即可</li>
                     </ol>
                     <p style="margin:8px 0;color:#94a3b8;">💡 推荐一次性导入所有：点上方聚合节点按钮复制全部 → 发到 iPhone 备忘录 → 长按链接 → 选 <b>Shadowrocket 拷贝链接</b>。</p>
 
-                    <h5>🤖 Android · v2rayNG 四步走</h5>
+                    <h5>🤖 Android · NekoNG 四步走（通用接入客户端）</h5>
                     <ol>
-                        <li>GitHub 下 v2rayNG 安装包 → 打开 App</li>
+                        <li>GitHub 下 NekoNG 安装包 → 打开 App</li>
                         <li>首页右上角 ➕ →「扫码」 或「从剪贴板导入」</li>
                         <li>左上角菜单 →「服务器」选择对应节点</li>
-                        <li>右下角圆形 <b>V 图标</b> 开启系统代理，状态栏出现 V 图标表示成功</li>
+                        <li>右下角圆形 <b>启动图标</b> 开启系统接入，状态栏出现 V 图标表示成功</li>
                     </ol>
 
-                    <h5>📦 新选 Android · NekoBox（sing-box 内核）</h5>
+                    <h5>📦 新选 Android · NekoBox（通用接入内核）</h5>
                     <ul><li>右下角 ➕ → Scan QR code / Import from Clipboard → 底部切到「配置」选项卡 → 打开开关即可。</li></ul>
 
-                    <h5>🪟 Windows · v2rayN 桌面端（最简单）</h5>
+                    <h5>🪟 Windows · Nekoray 桌面端（最简单）</h5>
                     <ol>
-                        <li>解压缩 v2rayN.zip 后运行 <code>v2rayN.exe</code>（托盘区会出现 V 图标）</li>
+                        <li>解压缩 Nekoray.zip 后运行 <code>Nekoray.exe</code>（托盘区会出现 V 图标）</li>
                         <li>双击托盘图标打开窗口 → 菜单「服务器 → 扫描屏幕二维码」（会自动截屏识别当前屏幕上所有二维码）</li>
                         <li>或「服务器 → 从剪贴板导入批量 URL」→ 粘贴聚合节点 → 一次性导入所有节点</li>
                         <li>托盘图标右键 →「系统代理 → 自动配置系统代理」→ 开始使用</li>
@@ -624,7 +624,7 @@ EOF
                     <h5>🍏 macOS · Clash Verge Rev</h5>
                     <ol>
                         <li>安装 Clash Verge Rev → 左侧栏「订阅」→ 新建 → 粘贴你自己转换好的订阅链接</li>
-                        <li>对于 v2rayNG / sb.sh 格式的分享链接：用在线工具转成 Clash 订阅格式，或安装 v2rayU 直接粘链接</li>
+                        <li>对于通用链接 / sb.sh 格式的分享链接：用在线工具转成 Clash 订阅格式，或安装 Nekoray 直接粘链接</li>
                         <li>打开「系统代理」+「TUN 模式」：游戏、应用商店全局代理</li>
                     </ol>
 
@@ -638,7 +638,7 @@ EOF
             <details>
                 <summary>❓ 常见问题（扫码失败 / 连不上 / Ghelper 冲突）</summary>
                 <div class="guide">
-                    <h5>1. 小火箭 / v2rayNG 扫不到二维码？</h5>
+                    <h5>1. 小火箭通用 / NekoNG 扫不到二维码？</h5>
                     <ul>
                         <li>原因：浏览器缩放 / 截图被压缩、或二维码斜着拍</li>
                         <li>解决：直接点协议卡片里的 <b>「复制链接」按钮</b> → 粘贴到客户端，比扫码更稳 100%</li>
@@ -650,8 +650,8 @@ EOF
                     </ul>
                     <h5>3. 浏览器打开这一页 502 / 打不开？</h5>
                     <ul>
-                        <li>如果你装了 Chrome 插件 <b>Ghelper</b>：插件设置里把 VPN 服务器 IP 加入「直连域名列表」，或临时切到「仅国内加速」模式即可</li>
-                        <li>云厂商安全组：确认 <b>TCP 80</b> 端口已放通（UDP 协议 VPN 端口也要放行对应端口段）</li>
+                        <li>如果你装了 Chrome 插件 <b>Ghelper</b>：插件设置里把节点服务器 IP 加入「直连域名列表」，或临时切到「仅国内加速」模式即可</li>
+                        <li>云厂商安全组：确认 <b>TCP 80</b> 端口已放通（UDP 接入端口也要放行对应端口段）</li>
                     </ul>
                     <h5>4. 页面上的二维码显示为条纹占位图？</h5>
                     <ul>
@@ -672,8 +672,8 @@ bash /etc/s-box/sb_output.sh main</pre>
                 <li><b>客户端优先顺序：</b>日常刷视频用 Hysteria-2 / Tuic-v5（UDP 更快），办公内网兼容性优先用 Vmess-WS-TLS，追求最强伪装用 Vless-Reality</li>
                 <li><b>iOS 扫码识别率低？</b> 不要扫，直接「复制链接 → AirDrop / 微信发到手机 → 备忘录长按粘到 Shadowrocket」</li>
                 <li><b>多台设备共享？</b> 把这一页的 URL（http://服务器IP/latest/）直接发给家人朋友，他们也能自行扫码/导入；页面是只读静态页，很安全</li>
-                <li><b>路由器全屋代理：</b>OpenWrt + PassWall2 按上方「协议配置详情」填参数即可，电视 / Switch / PS5 / IoT 全设备不用单独装客户端</li>
-                <li><b>定期备份：</b>备份 <code>/etc/s-box/sb.json</code> 和 <code>/etc/s-box/private.key</code>，即使 VPS 重装，把文件放回 → 重新跑 vpn.sh → <b>旧链接依然可用</b></li>
+                <li><b>路由器全屋接入：</b>OpenWrt + PassWall2 按上方「协议配置详情」填参数即可，电视 / Switch / PS5 / IoT 全设备不用单独装客户端</li>
+                <li><b>定期备份：</b>备份 <code>/etc/s-box/sb.json</code> 和 <code>/etc/s-box/private.key</code>，即使 VPS 重装，把文件放回 → 重新跑部署脚本 → <b>旧链接依然可用</b></li>
             </ul>
         </div>
 
@@ -1228,7 +1228,8 @@ IPCHECK_EOF
         echo ""
         blue "Pre-check done. If FAIL verdict, Ctrl+C now, rebuild instance for new IP, re-run."
         sleep 3
-    fi}
+    fi
+}
 
 # =====================================================
 # 纯 bash 补丁工具：在第 N 行之后插入多行内容
@@ -1541,7 +1542,7 @@ step7_show_result(){
     [ -z "$pub" ] && pub=$(hostname -I 2>/dev/null | awk '{print $1}')
 
     white "========================================================================"
-    blue "   🌐 访问地址（浏览器直接打开即可查看 VPN 配置页）："
+    blue "   🌐 访问地址（浏览器直接打开即可查看节点接入页面 / 扫码即用）："
     green "      http://${pub}/               （自动跳转到最新配置）"
     yellow "      http://${pub}/latest/        （直接访问最新目录）"
     white "========================================================================"
