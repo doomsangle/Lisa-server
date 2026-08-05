@@ -31,51 +31,42 @@
 
 ## 🎯 脚本对比：原版 sb.sh vs 本仓库 vpn.sh
 
-| 项目          | 原版 sing-box-yg（sb.sh）                                                                  | 本仓库 vpn.sh（✅ 推荐）                                                                                                                                                                                          |
-| ----------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **一行执行命令**  | `bash <(wget -qO- https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb.sh)` | 海外：`bash <(curl -Ls https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)`国内：`bash <(curl -Ls https://gh-proxy.com/https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)` |
-| **部署交互**    | 需手动按菜单：`9` 安装 → `15` 生成分享                                                              | **0 交互全自动**（内置 wget 预检查、sb.sh 补丁、Nginx 安装配置、防火墙放行…）                                                                                                                                                       |
-| **产出物**     | 终端打印文字链接（无二维码 / 无 HTML 页面）                                                             | 日期文件夹 `YYYYMMDD-N/` + 二维码 `.png` + **完整响应式 HTML 页面**（Hero 6 平台 Tabs + 每张协议 5 色 Badge + 聚合节点⭐一键复制 + 扫码教程折叠面板 + FAQ/Ghelper 冲突说明 + 使用小贴士卡片）                                                                 |
-| **访问方式**    | 一条条复制终端文字，手机粘贴                                                                         | 浏览器打开 `http://<IP>/latest/` → 扫码 / 一键复制全部                                                                                                                                                                 |
-| **Nginx**   | 无                                                                                      | ✅ 自动安装（apt/yum/dnf 自适应）+ 覆盖默认站点 root → /etc/s-box/output + 302 `/` → `/latest/` 软链                                                                                                                        |
-| **新机器依赖**   | 需要先手动 `yum install -y wget`                                                            | ✅ 自动补 wget / qrencode；CRLF 换行符自动修复                                                                                                                                                                        |
-| **链接稳定性**   | 同（都基于 sb.json 只生成一次）                                                                   | 同                                                                                                                                                                                                         |
-| **主页 / 仓库** | [yonggekkk/sing-box-yg](https://github.com/yonggekkk/sing-box-yg)                      | **[doomsangle/Lisa-server](https://github.com/doomsangle/Lisa-server)**（你自己的仓库）                                                                                                                           |
+| 项目                                                                                     | 原版 sing-box-yg（sb.sh） | 本仓库 vpn.sh（✅ 推荐） |
+| -------------------------------------------------------------------------------------- | --------------------- | ---------------- |
+| **一行执行命令**                                                                             | \`\`\`bash            | <br />           |
+| bash <(wget -qO- <https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb.sh>) | <br />                | <br />           |
 
-***
+````|
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
+````
+
+🐌 **国内服务器**（GitHub raw 超时）走 gh-proxy 加速：
+
+````ansi
+bash <(wget -qO- https://gh-proxy.com/https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
+``` |
+| **部署交互** | 需手动按菜单：`9` 安装 → `15` 生成分享 | **0 交互全自动**（内置 wget 预检查、sb.sh 补丁、Nginx 安装配置、防火墙放行…） |
+| **产出物** | 终端打印文字链接（无二维码 / 无 HTML 页面）| 日期文件夹 `YYYYMMDD-N/` + 二维码 `.png` + **完整响应式 HTML 页面**（Hero 6 平台 Tabs + 每张协议 5 色 Badge + 聚合节点⭐一键复制 + 扫码教程折叠面板 + FAQ/Ghelper 冲突说明 + 使用小贴士卡片）|
+| **访问方式** | 一条条复制终端文字，手机粘贴 | 浏览器打开 `http://<IP>/latest/` → 扫码 / 一键复制全部 |
+| **Nginx** | 无 | ✅ 自动安装（apt/yum/dnf 自适应）+ 覆盖默认站点 root → /etc/s-box/output + 302 `/` → `/latest/` 软链 |
+| **新机器依赖** | 需要先手动 `yum install -y wget` | ✅ 自动补 wget / qrencode；CRLF 换行符自动修复 |
+| **链接稳定性** | 同（都基于 sb.json 只生成一次）| 同 |
+| **主页 / 仓库** | [yonggekkk/sing-box-yg](https://github.com/yonggekkk/sing-box-yg) | **[doomsangle/Lisa-server](https://github.com/doomsangle/Lisa-server)**（你自己的仓库）|
+
+---
 
 ## 🚀 部署步骤（3+1 种方式，任选其一）
 
 ### ⭐ 方式 A（最快，无需本地文件）：服务器直接从你的 GitHub 拉取
-
 **不用本地下载 vpn.sh、不用 scp 传文件，SSH 进服务器粘贴 1 行就完事。**
-
-> 💡 **如果提示** **`wget: command not found`**，先执行下面任意一条 bootstrap（任选其一）：
->
-> ```bash
-> # 方案 1：大多数系统自带 curl，优先用 curl（推荐）
-> bash <(curl -Ls https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
->
-> # 方案 2：先装 wget 再执行（Debian/Ubuntu）
-> apt-get update -y && apt-get install -y wget && bash <(wget -qO- https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
->
-> # 方案 3：先装 wget 再执行（CentOS/RHEL）
-> yum install -y wget && bash <(wget -qO- https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
-> ```
-
-📋 **一键复制命令：**
-
 ```bash
-# 1) 海外机器 / 能直接访问 GitHub raw —— 优先用 curl（自带率更高）
-bash <(curl -Ls https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
-#    或者用 wget：
-#    bash <(wget -qO- https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
+# 1) 海外机器 / 能直接访问 GitHub raw
+bash <(wget -qO- https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
 
 # 2) 国内机器（GitHub raw 常超时）→ gh-proxy.com 加速镜像
-bash <(curl -Ls https://gh-proxy.com/https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
-#    或者用 wget：
-#    bash <(wget -qO- https://gh-proxy.com/https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
-```
+bash <(wget -qO- https://gh-proxy.com/https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
+````
 
 > 跑完看输出里的部署完成提示 → 浏览器打开 `http://<服务器IP>/latest/` 就能看到配置页面。
 
@@ -83,9 +74,7 @@ bash <(curl -Ls https://gh-proxy.com/https://raw.githubusercontent.com/doomsangl
 
 #### 第 1 步：上传到服务器
 
-📋 **一键复制命令：**
-
-```bash
+```ansi
 scp -O vpn.sh root@<你的服务器IP>:~
 # 或用 Xftp / WinSCP 等工具（传完记得校验文件大小≈60KB）
 ```
@@ -105,9 +94,8 @@ scp -O vpn.sh root@<你的服务器IP>:~
 
 ### 第 2 步：执行
 
-📋 **一键复制命令：**
-
-```bash
+```ansi
+ssh root@<你的服务器IP>
 chmod +x vpn.sh
 bash vpn.sh
 ```
@@ -125,7 +113,7 @@ bash vpn.sh
 
 脚本结束时会输出：
 
-```text
+```
 ========================================
 ✅ 部署完成！请访问：
    http://<服务器IP>/latest/            ← 推荐，永远是最新一份
@@ -139,7 +127,7 @@ bash vpn.sh
 
 ## 📂 服务器端输出目录结构
 
-```text
+```
 /etc/s-box/
 ├── sb.json                     # sing-box 核心配置（端口/UUID/密码 都在这里，首次部署后就不动了）
 ├── vl_reality.txt              # Vless-Reality 单节点链接
@@ -229,9 +217,8 @@ bash vpn.sh
 
 #### 步骤
 
-📋 **一键复制命令：**
-
-```bash#
+```ansi
+# ---------- 在【主控机】上执行（主控机也跑过 vpn.sh，有 nginx 的那台）----------
 
 # 1. 建立汇聚目录
 mkdir -p /etc/s-box/merge/nodes
@@ -277,9 +264,8 @@ echo "✅ 汇聚完成，共 $(wc -l < /etc/s-box/output/all-nodes.txt) 条节�
 
 #### 在【主控机】上跑（依赖方案一的 \`/etc/s-box/output/all-nodes.txt 已生成）：
 
-📋 **一键复制命令：**
-
-```bash#
+```ansi
+# 1. 装 qrencode（vpn.sh 已经装过，如果没装：yum/apt 装一下）
 command -v qrencode >/dev/null 2>&1 || { apt-get install -y qrencode >/dev/null 2>&1 || yum install -y qrencode >/dev/null 2>&1 || true; }
 
 # 2. 生成聚合二维码（分两种格式，按你常用客户端选）
@@ -307,10 +293,8 @@ echo "   格式 B（Base64 订阅）    → $OUT_DIR/merge-qr-b64.png   访问�
 
 #### 在【主控机】跑一次脚本（把下面脚本存成 /etc/s-box/merge-page.sh，chmod +x 执行）
 
-📋 **一键复制命令：**
-
-```bash
-cat > /etc/s-box/merge-page.sh << 'SCRIPT_EOF'
+```ansi
+cat > /etc/s-box/merge-page.sh <<'PAGE_EOF'
 #!/bin/bash
 # 多节点多国家 聚合总览 HTML 生成器
 # 前置：方案一已完成，/etc/s-box/merge/nodes/*.txt 已放好；并把每台子机的 output 目录名 按 国家缩写-供应商 命名，每台子机
@@ -480,23 +464,19 @@ echo "✅ 聚合总览 HTML 生成完毕"
 echo "   页面： http://<主控IP>/merge.html"
 echo "   节点： $total_hosts 台机器 · $total_nodes 条节点"
 PAGE_EOF
-SCRIPT_EOF
 chmod +x /etc/s-box/merge-page.sh
 ```
 
 执行：
 
-📋 **一键复制命令：**
-
-```bash
+```ansi
 bash /etc/s-box/merge-page.sh
 ```
 
 **如果每台子机的二维码也想显示出来，执行下面把 PNG 一起拉过来（可选）：**
 
-📋 **一键复制命令：**
-
-```bash#
+```ansi
+# 在【主控机】把每台子机的 *.png 拉过来（按 国家缩写-供应商 前缀命名，避免冲突）
 mkdir -p /etc/s-box/merge/pngs
 
 # 方式 A：scp 批量拉（例：日本 Vultr，IP 1.2.3.4）
@@ -519,9 +499,8 @@ bash /etc/s-box/merge-page.sh
 
 ## 🔧 故障排查 · 一行命令速查
 
-📋 **一键复制命令：**
-
-```bash#
+```ansi
+# 1. 查看最新生成的 HTML（最近一次 vpn.sh 输出的路径）
 ls -lt /etc/s-box/output/ | head -5
 cat "/etc/s-box/output/$(ls -1 /etc/s-box/output/ | grep -v latest | tail -1)/index.html" | head -40
 
@@ -735,9 +714,7 @@ ss -lntp | grep -E 'in\.sing|sing-' # sing-box 监听端口（或 ss -lunp 看 U
 
 #### 👉 WireGuard（简单场景 / 远程办公首选）
 
-📋 **一键复制命令：**
-
-```bash
+```ansi
 curl -O https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh
 chmod +x wireguard-install.sh
 ./wireguard-install.sh
@@ -745,9 +722,8 @@ chmod +x wireguard-install.sh
 
 #### 👉 sing-box / Xray（抗干扰 / 日常跨境首选）
 
-📋 **一键复制命令：**
-
-```bash#
+```ansi
+# ① 233boy sing-box 一键脚本
 bash <(curl -Ls https://raw.githubusercontent.com/233boy/sing-box/main/install.sh)
 
 # ② yonggekkk sing-box-yg（本仓库 vpn.sh 的底层原型）
@@ -866,9 +842,8 @@ Amazon   TikTok   美国广告         日本乐天   亚洲采购
 
 项目里配套 **[ip-check.sh](./ip-check.sh)**（7 项检测 + 加权评分 + PASS/WARNING/FAIL 结论 + 落盘 JSON 档案）：
 
-📋 **一键复制命令：**
-
-```bash#
+```ansi
+# ① 可选：先填 API Key（全部不填也能跑，会只跑免费的 3/7 项，留空即跳）
 export ABUSEIPDB_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx      # https://www.abuseipdb.com/  → 1000 次/天
 export IPQS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx              # https://ipqualityscore.com → 5000 次/月
 export SCAMALYTICS_KEY=xxxxxxxx                                # https://scamalytics.com   → 有免费 API 层
@@ -930,9 +905,8 @@ bash ip-check.sh 64.81.25.225
 
 #### 快速使用示例
 
-📋 **一键复制命令：**
-
-```bash#
+```ansi
+# 1) 纯 IPv6-only VPS（没有公网 IPv4）→ 自动 fallback 到 IPv6，不再报错退出
 PRECHECK_IP=1  bash vpn.sh
 
 # 2) 手动指定 IPv6 地址进行体检
