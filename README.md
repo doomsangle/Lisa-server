@@ -22,6 +22,7 @@
 
 | 日期             | 版本   | 更新内容                                                                                                                                                                                                                                              | 涉及文件 / 章节                                         |
 | -------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **2026-10-01** | v1.4 | 🛠️ **实测排障实录（LisaHost · CentOS Stream 9 实机验证）**：① 修复「**页面节点参数全空**」问题——首次运行时 sing-box 生成环节异常，页面照常产出但端口/UUID/SNI 全空；二次运行虽补齐了节点文件，页面仍是旧版。修复 = 重跑 `bash /etc/s-box/sb_output.sh main`（`latest` 软链自动指向新目录，无需重装 sing-box）。② 实测 5 协议监听（vless 42155 / vmess 2086 / hy2 13334 / tuic5 28252 / anytls 33387）+ 外网连通性全部正常。③ 确认 SSH 间歇性 `kex_exchange_identification: Connection reset` 属跨境线路 RST 干扰（sshd 正常），重试即可。 | README `## ❓ 重复执行 FAQ` 新增 2 条 + `## 🔧 故障排查` 新增第 6/7 条 |
 | **2026-07-20** | v1.3 | ✅ **IPv6 双栈支持**：自动获取公网 IP 从「只支持 IPv4（`-4`）」改为「**IPv4 优先 → 失败自动 fallback 到 IPv6（`-6`）三源重试」；`ip-check.sh`** **新增** **`IP_VER`** **变量自动区分 v4/v6，IPv6 目标自动跳过 RBL（公开 DNSBL 对 IPv6 支持极少），其余 Geo/ASN/AbuseIPDB/IPQS/Scamalytics/Spur 6 项检测**对 IPv6 全部生效。 | `ip-check.sh` L38-L216、`vpn.sh` L827-L1005（内嵌段同步） |
 | **2026-07-20** | v1.2 | 🔧 **变量引用加固**：修复 `chmod +x $SB_OUTPUT_PATH` 和 `chmod +x $IPCHECK_PATH` 两处**未加双引号保护**的隐患（如果路径含空格会拆分参数报错），统一为带引号的 `"$SB_OUTPUT_PATH"` / `"$IPCHECK_PATH"`。                                                                                          | `vpn.sh` L785、L1188                               |
 | **2026-07-19** | v1.1 | 🆕 **多节点多国家汇聚指南**：新增 3 套「N 台 VPS 的节点 → 统一管理」方案：① 「一个订阅 URL」一键导入全部客户端；② 聚合二维码（手机扫一次导入所有节点）；③ 聚合总览 HTML 页（一页展示全部国家全部协议的二维码+复制按钮），附带完整 bash 脚本。                                                                                                      | README `## 🗺️ 多节点多国家汇聚指南`                        |
@@ -36,14 +37,13 @@
 | **一行执行命令**                                                                             | \`\`\`bash            | <br />           |
 | bash <(wget -qO- <https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb.sh>) | <br />                | <br />           |
 
-````|
-```bash
+```Markdown
 bash <(wget -qO- https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
-````
+```
 
 🐌 **国内服务器**（GitHub raw 超时）走 gh-proxy 加速：
 
-````ansi
+````Markdown
 bash <(wget -qO- https://gh-proxy.com/https://raw.githubusercontent.com/doomsangle/Lisa-server/main/vpn.sh)
 ``` |
 | **部署交互** | 需手动按菜单：`9` 安装 → `15` 生成分享 | **0 交互全自动**（内置 wget 预检查、sb.sh 补丁、Nginx 安装配置、防火墙放行…） |
@@ -166,6 +166,8 @@ bash vpn.sh
 | 为什么页面里「生成时间」/「主机名」有时是空？                    | 之前老版本是在 heredoc 里嵌 `$(date ...)`，中间层 SSH/代理会吞掉 `%`。**最新 vpn.sh 已修复**：① generate\_html 顶部先把 `gen_time` / `hostname` 算成 bash 变量+默认值兜底；② HTML 写完再 `sed -i` 横扫 8 条规则，把残留字面量（`$gen_time` / `$(date ...)` / `$hostname` / `$DATE_FOLDER`）全部替回真实值。只要用最新脚本就一定有值。                                     |
 | 访问页面出现 **502 / DNS lookup failed**？        | 一般是浏览器装了 Ghelper / 或电脑走了别的代理 → 把「服务器 IP」加进 Ghelper「直连列表」或暂时关代理再访问；也可用手机 4G 直连验证。                                                                                                                                                                                                             |
 | 部署完 Nginx 仍然看到 `Welcome to nginx!` 默认页？    | 不同发行版 Nginx 默认配置文件位置不同（`/etc/nginx/conf.d/default.conf` vs `/etc/nginx/sites-enabled/default`），vpn.sh 会**两处都覆盖 + 删 sites-enabled/default + nginx -t 检查 + systemctl reload nginx**。如果还是欢迎页：`ls -la /etc/nginx/conf.d/default.conf` 看里面 `root` 是不是 `/etc/s-box/output;`，再手动 `nginx -s reload`。 |
+| 浏览器打开页面，**所有节点的端口/UUID/SNI 全是空的**（链接形如 `vless://@IP:?...`，协议详情全是「—」）？ | 说明**页面生成时 sing-box 配置尚未就绪**（首次运行生成环节异常，或 sb.json 没生成/为空）。不要急着重跑整个 vpn.sh——先确认 sb.json 有真实值：`jq '.inbounds[0].listen_port' /etc/s-box/sb.json`（或 `cat /etc/s-box/vl_reality.txt` 看链接是否带端口/UUID）。sb.json 正常则执行 **`bash /etc/s-box/sb_output.sh main`** 重新生成页面：它会新建 `output/YYYYMMDD-N` 目录并自动把 `latest` 软链切过去，刷新浏览器即显示完整参数。 |
+| SSH 登录报 **`kex_exchange_identification: read: Connection reset`**，时好时坏？ | 这是**跨境线路的间歇性 RST 干扰**（运营商 QoS/GFW 行为），不是服务器故障。判定方法：在任一能通的机器上执行 `timeout 5 bash -c 'exec 3<>/dev/tcp/<服务器IP>/<SSH端口>; head -c 21 <&3'`，能收到 `SSH-2.0-OpenSSH_x.x` 版本串即说明 sshd 正常——**多重试几次/换个时段即可**。2026-10-01 在 LisaHost 实机复现并确认。 |
 
 ***
 
@@ -519,6 +521,14 @@ curl -s  http://127.0.0.1/latest/ | head -5   # 应返回 <!DOCTYPE html>
 # 5. 防火墙检查
 ss -lntp | grep -E ':(80|443)\s'   # nginx
 ss -lntp | grep -E 'in\.sing|sing-' # sing-box 监听端口（或 ss -lunp 看 UDP）
+
+# 6. 页面节点参数全空：先验证 sb.json 有真实值，再重新生成页面（latest 软链自动切换）
+jq -r '.inbounds[0].listen_port, .inbounds[0].users[0].uuid' /etc/s-box/sb.json   # 端口/UUID 应非空
+cat /etc/s-box/vl_reality.txt                                                     # 链接应带端口/UUID/sni
+bash /etc/s-box/sb_output.sh main                                                 # 重新生成 → 新目录 output/YYYYMMDD-N
+
+# 7. SSH 报 kex_exchange_identification: Connection reset（时好时坏）→ 多为跨境线路 RST 干扰
+timeout 5 bash -c 'exec 3<>/dev/tcp/127.0.0.1/<SSH端口>; head -c 21 <&3'  # 在服务器本机执行，能收到 SSH-2.0-OpenSSH_x.x 即 sshd 正常
 ```
 
 ***
@@ -601,10 +611,10 @@ ss -lntp | grep -E 'in\.sing|sing-' # sing-box 监听端口（或 ss -lunp 看 U
 | 供应商        | 价格区间          | 特点   |
 | ---------- | ------------- | ---- |
 | netcup     | €3 \~ 6 / 月   | 配置高  |
-| UpCloud    | $5 \~ 10 / 月  | 性能强  |
-| CloudScale | $5 / 月起       | 瑞士云  |
+| UpCloud    | \$5 \~ 10 / 月 | 性能强  |
+| CloudScale | \$5 / 月起      | 瑞士云  |
 | Sakura     | 约 500 日元 / 月起 | 日本稳定 |
-| OVH Canada | $5 / 月起       | 北美资源 |
+| OVH Canada | \$5 / 月起      | 北美资源 |
 
 ### 六、长期运营（Amazon / TikTok / 广告账号 / SaaS）首选组合（从高到低）
 
@@ -656,15 +666,15 @@ ss -lntp | grep -E 'in\.sing|sing-' # sing-box 监听端口（或 ss -lunp 看 U
 
 **适合**：个人使用、跨境电商、远程办公、访问海外资源、搭建代理节点。
 
-| 服务商                       | 节点地区         | 特点              | 价格参考         |
-| ------------------------- | ------------ | --------------- | ------------ |
-| Vultr                     | 美国、日本、新加坡、欧洲 | 老牌 VPS，开通快，IP 多 | $3.5 \~ 5/月起 |
-| DigitalOcean              | 美国、新加坡、德国等   | 稳定，文档丰富         | $4 \~ 6/月起   |
-| Linode                    | 美国、日本、新加坡等   | 性能稳定            | $5/月起        |
-| Hetzner                   | 德国、芬兰、新加坡    | 性价比极高           | €4 \~ 5/月起   |
-| Amazon Web Services (AWS) | 全球           | 企业级，复杂度高        | 按量计费         |
-| Google Cloud (GCP)        | 全球           | 免费额度，IP 资源丰富    | 按量计费         |
-| Microsoft Azure           | 全球           | 企业用户多           | 按量计费         |
+| 服务商                       | 节点地区         | 特点              | 价格参考          |
+| ------------------------- | ------------ | --------------- | ------------- |
+| Vultr                     | 美国、日本、新加坡、欧洲 | 老牌 VPS，开通快，IP 多 | \$3.5 \~ 5/月起 |
+| DigitalOcean              | 美国、新加坡、德国等   | 稳定，文档丰富         | \$4 \~ 6/月起   |
+| Linode                    | 美国、日本、新加坡等   | 性能稳定            | \$5/月起        |
+| Hetzner                   | 德国、芬兰、新加坡    | 性价比极高           | €4 \~ 5/月起    |
+| Amazon Web Services (AWS) | 全球           | 企业级，复杂度高        | 按量计费          |
+| Google Cloud (GCP)        | 全球           | 免费额度，IP 资源丰富    | 按量计费          |
+| Microsoft Azure           | 全球           | 企业用户多           | 按量计费          |
 
 ### 二、针对中国大陆访问速度优化的 VPS
 
@@ -735,10 +745,10 @@ bash <(wget -qO- https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb
 
 ### 五、服务器配置建议
 
-| 场景                     | 最低配置                                                 | 推荐配置                                       | 实例参考                                               |
-| ---------------------- | ---------------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
-| **个人使用（1-3 人）**        | 1 CPU / 512MB RAM / 10GB SSD / 500Mbps+ / 500GB/月 流量 | 1 CPU / 1GB RAM / 20GB SSD / 1TB/月         | Vultr $5/月：1C / 1GB / 25GB SSD / 1TB 流量 → **完全够用** |
-| **多人 / 公司办公室（5-20 人）** | 2 CPU / 2GB RAM / 40GB SSD / 2TB+ 流量                 | 4 CPU / 4GB RAM / 80GB SSD / 5TB+ / 1Gbps+ | Hetzner CX22 / AWS Lightsail $10                   |
+| 场景                     | 最低配置                                                 | 推荐配置                                       | 实例参考                                                |
+| ---------------------- | ---------------------------------------------------- | ------------------------------------------ | --------------------------------------------------- |
+| **个人使用（1-3 人）**        | 1 CPU / 512MB RAM / 10GB SSD / 500Mbps+ / 500GB/月 流量 | 1 CPU / 1GB RAM / 20GB SSD / 1TB/月         | Vultr \$5/月：1C / 1GB / 25GB SSD / 1TB 流量 → **完全够用** |
+| **多人 / 公司办公室（5-20 人）** | 2 CPU / 2GB RAM / 40GB SSD / 2TB+ 流量                 | 4 CPU / 4GB RAM / 80GB SSD / 5TB+ / 1Gbps+ | Hetzner CX22 / AWS Lightsail \$10                   |
 
 ### 六、跨境电商场景（Amazon / TikTok Shop / 独立站）特别建议
 
